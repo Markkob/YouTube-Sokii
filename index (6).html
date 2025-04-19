@@ -1,0 +1,703 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Search Ultra Premium</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Serif+Khmer:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <meta name="theme-color" content="#1e40af">
+  <link rel="manifest" href="/manifest.json">
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Serif Khmer', sans-serif;
+      overscroll-behavior: none;
+      scrollbar-width: thin;
+      scrollbar-color: #3b82f6 #1f2937;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1f2937;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3b82f6;
+      border-radius: 4px;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #1e40af 0%, #60a5fa 100%);
+      animation: gradientShift 15s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .holographic {
+      position: relative;
+      overflow: hidden;
+    }
+    .holographic::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0) 30%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0) 70%
+      );
+      animation: holographic 3s linear infinite;
+    }
+    @keyframes holographic {
+      0% { transform: translateX(-100%) translateY(-100%); }
+      100% { transform: translateX(100%) translateY(100%); }
+    }
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transform: perspective(1000px);
+    }
+    .card-hover:hover {
+      transform: perspective(1000px) translateY(-5px) rotateX(5deg);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+    .glow {
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    }
+    .sidebar {
+      transition: transform 0.3s ease;
+    }
+    .sidebar-hidden {
+      transform: translateX(-100%);
+    }
+    .preview-overlay {
+      transition: opacity 0.3s ease;
+    }
+    .animate-scale {
+      animation: scaleIn 0.3s ease;
+    }
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .micro-interaction {
+      transition: all 0.2s ease;
+    }
+    .micro-interaction:hover {
+      transform: scale(1.05);
+    }
+    .parallax {
+      background-attachment: fixed;
+      background-position: center;
+      background-size: cover;
+    }
+    .custom-cursor {
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="rgba(59,130,246,0.5)" /><circle cx="16" cy="16" r="5" fill="#3b82f6" /></svg>') 16 16, auto;
+    }
+    .full-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 50;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .video-iframe {
+      width: 100%;
+      max-width: 1200px;
+      height: 80vh;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    }
+    @media (max-width: 640px) {
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        z-index: 20;
+      }
+      .video-iframe {
+        height: 50vh;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col overflow-x-hidden custom-cursor" id="body">
+  <!-- Header -->
+  <header class="gradient-bg p-4 md:p-6 sticky top-0 z-10 shadow-lg glassmorphism">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <button id="menuButton" class="md:hidden text-white focus:outline-none micro-interaction">
+          <i class="fas fa-bars fa-lg"></i>
+        </button>
+        <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">YouTube Search Ultra Premium</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="relative hidden md:block">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="ស្វែងរកវីដេអូ..."
+            class="w-64 p-2 pl-10 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 glow"
+            aria-label="ស្វែងរកវីដេអូ"
+          />
+          <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+          <div id="suggestions" class="absolute w-full mt-1 bg-gray-800 rounded-lg shadow-lg hidden glassmorphism"></div>
+        </div>
+        <button id="searchButton" class="hidden md:block px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 glow micro-interaction holographic">
+          ស្វែងរក
+        </button>
+        <button id="voiceSearch" class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 glow micro-interaction" title="ស្វែងរកដោយសំឡេង" aria-label="ស្វែងរកដោយសំឡេង">
+          <i class="fas fa-microphone fa-lg"></i>
+        </button>
+        <button id="themeToggle" class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 glow micro-interaction" title="ប្តូរពន្លឺ/ងងឹត" aria-label="ប្តូរពន្លឺ/ងងឹត">
+          <i class="fas fa-moon fa-lg"></i>
+        </button>
+        <button id="telegramLogin" class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 glow micro-interaction" title="ចូលជាមួយ Telegram" aria-label="ចូលជាមួយ Telegram">
+          <i class="fab fa-telegram-plane fa-lg"></i>
+        </button>
+        <button id="premiumButton" class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 glow micro-interaction" title="ទិញ Premium" aria-label="ទិញ Premium">
+          <i class="fas fa-crown fa-lg"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Search Bar -->
+    <div class="mt-4 md:hidden max-w-7xl mx-auto">
+      <div class="relative">
+        <input
+          type="text"
+          id="mobileSearchInput"
+          placeholder="ស្វែងរកវីដេអូ..."
+          class="w-full p-3 pl-10 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 glow"
+          aria-label="ស្វែងរកវីដេអូ"
+        />
+        <i class="fas fa-search absolute left-3 top-4 text-gray-400"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar bg-gray-800 w-64 md:w-72 p-6 fixed md:sticky top-0 h-full md:h-screen z-20 sidebar-hidden md:transform-none glassmorphism">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-lg font-bold">រុករក</h2>
+      <button id="closeSidebar" class="md:hidden text-white focus:outline-none micro-interaction">
+        <i class="fas fa-times fa-lg"></i>
+      </button>
+    </div>
+    <nav class="space-y-4">
+      <button class="w-full text-left p-3 bg-gray-700 rounded-lg hover:bg-gray-600 glow flex items-center gap-2 micro-interaction holographic">
+        <i class="fas fa-fire"></i> ពេញនិយម
+      </button>
+      <button class="w-full text-left p-3 bg-gray-700 rounded-lg hover:bg-gray-600 glow flex items-center gap-2 micro-interaction holographic">
+        <i class="fas fa-user-plus"></i> ការជាវ
+      </button>
+      <button class="w-full text-left p-3 bg-gray-700 rounded-lg hover:bg-gray-600 glow flex items-center gap-2 micro-interaction holographic">
+        <i class="fas fa-history"></i> ប្រវត្តិ
+      </button>
+      <button class="w-full text-left p-3 bg-gray-700 rounded-lg hover:bg-gray-600 glow flex items-center gap-2 micro-interaction holographic">
+        <i class="fas fa-list"></i> បញ្ជីចាក់
+      </button>
+      <button class="w-full text-left p-3 bg-gray-700 rounded-lg hover:bg-gray-600 glow flex items-center gap-2 micro-interaction holographic">
+        <i class="fas fa-broadcast-tower"></i> ផ្សាយផ្ទាល់
+      </button>
+    </nav>
+    <!-- Ad Section -->
+    <div class="mt-6 p-4 bg-gray-700 rounded-lg glassmorphism holographic">
+      <p class="text-sm font-semibold">ឧបត្ថម្ភ</p>
+      <a href="https://t.me/sreycute123" target="_blank" class="text-blue-400 hover:text-blue-300 text-sm">@SreyCute123 - កម្សាន្ត & ស្រីស្អាត</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-grow p-4 md:p-6 parallax" style="background-image: url('https://images.unsplash.com/photo-1611162617213-7d15d750dc2f');">
+    <div class="max-w-7xl mx-auto">
+      <!-- Analytics Dashboard -->
+      <div class="mb-6 bg-gray-800 p-6 rounded-xl glassmorphism hidden" id="analyticsDashboard">
+        <h2 class="text-xl font-bold mb-4">ស្ថិតិស្វែងរក</h2>
+        <canvas id="searchChart"></canvas>
+      </div>
+      <!-- Recommendations -->
+      <div class="mb-6">
+        <h2 class="text-xl font-bold mb-4">ណែនាំសម្រាប់អ្នក</h2>
+        <div id="recommendations" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+      </div>
+      <!-- Filters -->
+      <div class="mb-6 flex gap-4 flex-wrap">
+        <select id="sortFilter" class="p-2 bg-gray-800 border border-gray-700 rounded-lg glow micro-interaction holographic" aria-label="តម្រៀបលទ្ធផល">
+          <option value="relevance">តម្រៀបតាមភាពពាក់ព័ន្ធ</option>
+          <option value="date">ថ្មីបំផុត</option>
+          <option value="duration">ប្រវែងវីដេអូ</option>
+        </select>
+        <select id="categoryFilter" class="p-2 bg-gray-800 border border-gray-700 rounded-lg glow micro-interaction holographic" aria-label="ជ្រើសរើសប្រភេទ">
+          <option value="all">ទាំងអស់</option>
+          <option value="music">តន្ត្រី</option>
+          <option value="entertainment">កម្សាន្ត</option>
+          <option value="education">អប់រំ</option>
+        </select>
+      </div>
+      <div id="results" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+    </div>
+  </main>
+
+  <!-- Video Player Modal -->
+  <div id="videoModal" class="hidden full-screen">
+    <button id="closeVideo" class="absolute top-4 right-4 text-white text-2xl micro-interaction">
+      <i class="fas fa-times"></i>
+    </button>
+    <iframe id="youtubePlayer" class="video-iframe" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+
+  <!-- Chatbot Modal -->
+  <div id="chatbotModal" class="fixed bottom-4 right-4 z-30 hidden">
+    <div class="bg-gray-800 p-4 rounded-xl glassmorphism w-80">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold">ជជែកជាមួយ Bot</h3>
+        <button id="closeChatbot" class="text-white micro-interaction">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="chatMessages" class="h-64 overflow-y-auto"></div>
+      <input
+        id="chatInput"
+        type="text"
+        placeholder="សួរអ្វីមួយ..."
+        class="w-full p-2 mt-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 glow"
+      />
+    </div>
+  </div>
+  <button id="openChatbot" class="fixed bottom-4 right-4 bg-blue-600 p-3 rounded-full glow micro-interaction holographic">
+    <i class="fas fa-comment fa-lg"></i>
+  </button>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 p-4 md:p-6 text-center glassmorphism">
+    <p class="text-sm opacity-75">ឧបត្ថម្ភដោយ BJ Tricks API | ដាក់លើ Vercel | បទពិសោធន៍ប្រណីតបំផុត</p>
+    <div class="mt-2 flex justify-center gap-4">
+      <a href="https://t.me/ziideveloperbot" target="_blank" class="text-blue-400 hover:text-blue-300 micro-interaction">@ZiiDeveloperBot</a>
+      <a href="https://t.me/sreycute123" target="_blank" class="text-blue-400 hover:text-blue-300 micro-interaction">@SreyCute123</a>
+    </div>
+  </footer>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const mobileSearchInput = document.getElementById('mobileSearchInput');
+    const searchButton = document.getElementById('searchButton');
+    const voiceSearch = document.getElementById('voiceSearch');
+    const themeToggle = document.getElementById('themeToggle');
+    const telegramLogin = document.getElementById('telegramLogin');
+    const premiumButton = document.getElementById('premiumButton');
+    const resultsDiv = document.getElementById('results');
+    const recommendationsDiv = document.getElementById('recommendations');
+    const menuButton = document.getElementById('menuButton');
+    const closeSidebar = document.getElementById('closeSidebar');
+    const sidebar = document.getElementById('sidebar');
+    const suggestionsDiv = document.getElementById('suggestions');
+    const sortFilter = document.getElementById('sortFilter');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const videoModal = document.getElementById('videoModal');
+    const youtubePlayer = document.getElementById('youtubePlayer');
+    const closeVideo = document.getElementById('closeVideo');
+    const chatbotModal = document.getElementById('chatbotModal');
+    const openChatbot = document.getElementById('openChatbot');
+    const closeChatbot = document.getElementById('closeChatbot');
+    const chatInput = document.getElementById('chatInput');
+    const chatMessages = document.getElementById('chatMessages');
+    const analyticsDashboard = document.getElementById('analyticsDashboard');
+    let searchCount = 0;
+
+    // PWA Setup
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').catch(err => console.error('Service Worker Error:', err));
+    }
+
+    // Theme Toggle
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('bg-gray-100');
+      document.body.classList.toggle('bg-gray-900');
+      document.body.classList.toggle('text-black');
+      document.body.classList.toggle('text-white');
+      themeToggle.innerHTML = document.body.classList.contains('bg-gray-100')
+        ? '<i class="fas fa-sun fa-lg"></i>'
+        : '<i class="fas fa-moon fa-lg"></i>';
+      localStorage.setItem('theme', document.body.classList.contains('bg-gray-100') ? 'light' : 'dark');
+    });
+
+    // Load Theme
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('bg-gray-100', 'text-black');
+      document.body.classList.remove('bg-gray-900', 'text-white');
+      themeToggle.innerHTML = '<i class="fas fa-sun fa-lg"></i>';
+    }
+
+    // Sidebar Toggle
+    menuButton.addEventListener('click', () => {
+      sidebar.classList.toggle('sidebar-hidden');
+    });
+    closeSidebar.addEventListener('click', () => {
+      sidebar.classList.add('sidebar-hidden');
+    });
+
+    // Telegram Login
+    telegramLogin.addEventListener('click', () => {
+      alert('ចូលជាមួយ Telegram: សូមប្រើ Telegram Bot @ZiiDeveloperBot');
+      // Implement Telegram Login with token: 7925024918:AAGwO4Gfdtmqhor6bG0OL8XXH44nYxuScW4
+    });
+
+    // Premium Payment with Bakong KHQR
+    premiumButton.addEventListener('click', () => {
+      alert('ទិញ Premium ជាមួយ Bakong KHQR: សូមស្កេន QR Code ដើម្បីទូទាត់');
+      // Integrate with Bakong KHQR API (e.g., merchant: Sokii STORE, city: Phnom Penh, phone: 0719878873, currency: USD)
+    });
+
+    // Search Suggestions
+    const fetchSuggestions = async (query) => {
+      suggestionsDiv.innerHTML = '';
+      suggestionsDiv.classList.add('hidden');
+      if (!query) return;
+
+      const mockSuggestions = [
+        `${query} music`,
+        `${query} tutorial`,
+        `${query} live`,
+        `${query} 2023`,
+      ];
+      suggestionsDiv.classList.remove('hidden');
+      mockSuggestions.forEach(suggestion => {
+        const div = document.createElement('div');
+        div.className = 'p-2 hover:bg-gray-700 cursor-pointer micro-interaction';
+        div.textContent = suggestion;
+        div.addEventListener('click', () => {
+          searchInput.value = suggestion;
+          mobileSearchInput.value = suggestion;
+          performSearch(suggestion);
+        });
+        suggestionsDiv.appendChild(div);
+      });
+    };
+
+    searchInput.addEventListener('input', () => fetchSuggestions(searchInput.value.trim()));
+    mobileSearchInput.addEventListener('input', () => fetchSuggestions(mobileSearchInput.value.trim()));
+
+    // Search Function
+    const performSearch = async (query, sort = 'relevance', category = 'all') => {
+      if (!query) {
+        alert('សូមបញ្ចូលពាក្យស្វែងរក');
+        return;
+      }
+
+      searchCount++;
+      updateAnalytics();
+
+      resultsDiv.innerHTML = '<p class="text-center text-blue-400 animate-pulse">កំពុងផ្ទុកលទ្ធផលប្រណីត...</p>';
+      try {
+        const response = await fetch(
+          `https://bjtricksapis.vercel.app/search/youtube?q=${encodeURIComponent(query)}`
+        );
+        const data = await response.json();
+
+        if (data.status && data.result.length > 0) {
+          resultsDiv.innerHTML = '';
+          data.result.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'bg-gray-800 p-4 rounded-xl card-hover glow animate-scale relative group';
+            card.innerHTML = `
+              <div class="relative">
+                <img src="${item.imageUrl}" alt="${item.title}" class="w-full h-40 object-cover rounded-lg mb-3">
+                <span class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">${item.duration}</span>
+                <div class="preview-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <i class="fas fa-play text-white text-2xl"></i>
+                </div>
+              </div>
+              <h3 class="text-lg font-semibold mb-2 line-clamp-2">${item.title}</h3>
+              <p class="text-gray-400 text-sm mb-1">${item.channel}</p>
+              <div class="flex gap-2 flex-wrap">
+                <button class="playBtn text-blue-400 hover:text-blue-300 text-sm micro-interaction" data-url="${item.link}">មើលឥឡូវនេះ</button>
+                <button class="downloadBtn text-gray-400 hover:text-white text-sm micro-interaction" data-url="${item.link}">
+                  <i class="fas fa-download"></i> ទាញយក
+                </button>
+                <button class="shareBtn text-gray-400 hover:text-white text-sm micro-interaction" data-url="${item.link}">
+                  <i class="fas fa-share"></i> ចែករំលែក
+                </button>
+                <button class="sendToTelegram text-gray-400 hover:text-white text-sm micro-interaction" data-url="${item.link}">
+                  <i class="fab fa-telegram-plane"></i> ផ្ញើទៅ Telegram
+                </button>
+              </div>
+            `;
+            resultsDiv.appendChild(card);
+          });
+
+          // Play Video
+          document.querySelectorAll('.playBtn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const url = btn.dataset.url;
+              const videoId = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/)?.[1];
+              if (videoId) {
+                youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                videoModal.classList.remove('hidden');
+              } else {
+                alert('មិនអាចទាញ video ID បាន។ សូមព្យាយាមម្តងទៀត។');
+              }
+            });
+          });
+
+          // Download Button
+          document.querySelectorAll('.downloadBtn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const url = btn.dataset.url;
+              try {
+                const response = await fetch(
+                  `https://lemon-chiffondragon.onpella.app/youtube/url=${encodeURIComponent(url)}&key=87654321`
+                );
+                const data = await response.json();
+                alert(`ទាញយកវីដេអូ: ${data.downloadUrl || url}`);
+              } catch (error) {
+                alert('កំហុសក្នុងការទាញយក');
+                console.error(error);
+              }
+            });
+          });
+
+          // Share Button
+          document.querySelectorAll('.shareBtn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const url = btn.dataset.url;
+              if (navigator.share) {
+                navigator.share({
+                  title: 'ចែករំលែកវីដេអូ',
+                  url: url,
+                });
+              } else {
+                alert(`ចែករំលែកតំណ: ${url}`);
+              }
+            });
+          });
+
+          // Send to Telegram
+          document.querySelectorAll('.sendToTelegram').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const url = btn.dataset.url;
+              alert(`ផ្ញើទៅ Telegram: ${url}`);
+              // Integrate with Telegram Bot API (token: 7925024918:AAGwO4Gfdtmqhor6bG0OL8XXH44nYxuScW4)
+            });
+          });
+        } else {
+          resultsDiv.innerHTML = '<p class="text-center text-red-400">រកមិនឃើញលទ្ធផល</p>';
+        }
+      } catch (error) {
+        resultsDiv.innerHTML = '<p class="text-center text-red-400">កំហុសក្នុងការទាញលទ្ធផល</p>';
+        console.error(error);
+      }
+    };
+
+    // Recommendations
+    const loadRecommendations = async () => {
+      recommendationsDiv.innerHTML = '<p class="text-center text-blue-400 animate-pulse">កំពុងផ្ទុកការណែនាំ...</p>';
+      try {
+        const response = await fetch(
+          `https://bjtricksapis.vercel.app/search/youtube?q=trending`
+        );
+        const data = await response.json();
+
+        if (data.status && data.result.length > 0) {
+          recommendationsDiv.innerHTML = '';
+          data.result.slice(0, 4).forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'bg-gray-800 p-4 rounded-xl card-hover glow animate-scale relative group';
+            card.innerHTML = `
+              <div class="relative">
+                <img src="${item.imageUrl}" alt="${item.title}" class="w-full h-40 object-cover rounded-lg mb-3">
+                <span class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">${item.duration}</span>
+                <div class="preview-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <i class="fas fa-play text-white text-2xl"></i>
+                </div>
+              </div>
+              <h3 class="text-lg font-semibold mb-2 line-clamp-2">${item.title}</h3>
+              <p class="text-gray-400 text-sm mb-1">${item.channel}</p>
+              <div class="flex gap-2">
+                <button class="playBtn text-blue-400 hover:text-blue-300 text-sm micro-interaction" data-url="${item.link}">មើលឥឡូវនេះ</button>
+              </div>
+            `;
+            recommendationsDiv.appendChild(card);
+          });
+
+          document.querySelectorAll('.playBtn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const url = btn.dataset.url;
+              const videoId = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/)?.[1];
+              if (videoId) {
+                youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                videoModal.classList.remove('hidden');
+              } else {
+                alert('មិនអាចទាញ video ID បាន។ សូមព្យាយាមម្តងទៀត។');
+              }
+            });
+          });
+        } else {
+          recommendationsDiv.innerHTML = '<p class="text-center text-red-400">រកមិនឃើញការណែនាំ</p>';
+        }
+      } catch (error) {
+        recommendationsDiv.innerHTML = '<p class="text-center text-red-400">កំហុសក្នុងការទាញការណែនាំ</p>';
+        console.error(error);
+      }
+    };
+
+    // Close Video Modal
+    closeVideo.addEventListener('click', () => {
+      videoModal.classList.add('hidden');
+      youtubePlayer.src = ''; // Stop video
+    });
+
+    // Chatbot
+    openChatbot.addEventListener('click', () => {
+      chatbotModal.classList.remove('hidden');
+    });
+    closeChatbot.addEventListener('click', () => {
+      chatbotModal.classList.add('hidden');
+    });
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && chatInput.value.trim()) {
+        const message = chatInput.value.trim();
+        const userMsg = document.createElement('div');
+        userMsg.className = 'p-2 bg-gray-700 rounded-lg mb-2 text-right';
+        userMsg.textContent = message;
+        chatMessages.appendChild(userMsg);
+
+        const botMsg = document.createElement('div');
+        botMsg.className = 'p-2 bg-blue-600 rounded-lg mb-2';
+        botMsg.textContent = `សួស្តី! សម្រាប់សំណួរ "${message}" សូមទាក់ទង @ZiiDeveloperBot ឬសាកល្បងស្វែងរកវីដេអូ! 😊`;
+        chatMessages.appendChild(botMsg);
+
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        chatInput.value = '';
+      }
+    });
+
+    // Analytics Dashboard
+    const updateAnalytics = () => {
+      analyticsDashboard.classList.remove('hidden');
+      const ctx = document.getElementById('searchChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: Array.from({ length: searchCount }, (_, i) => `Search ${i + 1}`),
+          datasets: [{
+            label: 'ចំនួនស្វែងរក',
+            data: Array.from({ length: searchCount }, () => Math.floor(Math.random() * 100)),
+            borderColor: '#3b82f6',
+            fill: false,
+          }],
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true },
+          },
+        },
+      });
+    };
+
+    // Voice Command Navigation
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'km-KH';
+      recognition.continuous = true;
+
+      recognition.onresult = (event) => {
+        const command = event.results[event.results.length - 1][0].transcript.toLowerCase();
+        if (command.includes('បើក sidebar')) {
+          sidebar.classList.remove('sidebar-hidden');
+        } else if (command.includes('បិទ sidebar')) {
+          sidebar.classList.add('sidebar-hidden');
+        } else if (command.includes('ស្វែងរក')) {
+          const query = command.replace('ស្វែងរក', '').trim();
+          searchInput.value = query;
+          mobileSearchInput.value = query;
+          performSearch(query);
+        }
+      };
+
+      voiceSearch.addEventListener('click', () => {
+        recognition.start();
+      });
+    } else {
+      voiceSearch.addEventListener('click', () => {
+        alert('ស្វែងរកដោយសំឡេងមិនគាំទ្រនៅលើកម្មវិធីរុករកនេះទេ។');
+      });
+    }
+
+    // Desktop Search
+    searchButton.addEventListener('click', () => performSearch(searchInput.value.trim(), sortFilter.value, categoryFilter.value));
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') performSearch(searchInput.value.trim(), sortFilter.value, categoryFilter.value);
+    });
+
+    // Mobile Search
+    mobileSearchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') performSearch(mobileSearchInput.value.trim(), sortFilter.value, categoryFilter.value);
+    });
+
+    // Filter Change
+    sortFilter.addEventListener('change', () => performSearch(searchInput.value.trim() || mobileSearchInput.value.trim(), sortFilter.value, categoryFilter.value));
+    categoryFilter.addEventListener('change', () => performSearch(searchInput.value.trim() || mobileSearchInput.value.trim(), sortFilter.value, categoryFilter.value));
+
+    // Load Recommendations on Page Load
+    loadRecommendations();
+  </script>
+</body>
+</html>
